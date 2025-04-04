@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+        <description>Default block replication</description>
+    </property>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file:///hadoop/dfs/namenode</value>
+        <description>The directory where the NameNode stores the namespace and transaction logs.</description>
+    </property>
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file:///hadoop/dfs/datanode</value>
+        <description>The directory where the DataNode stores the blocks.</description>
+    </property>
+    <property>
+        <name>dfs.permissions</name>
+        <value>false</value>
+        <description>Disable permission checking.</description>
+    </property>
+    <property>
+        <name>dfs.client.use.datanode.hostname</name>
+        <value>true</value>
+        <description>Whether clients should use datanode hostnames when connecting to datanodes.</description>
+    </property>
+</configuration>

@@ -1,0 +1,58 @@
+services:
+
+  hdfs-namenode:
+    image: apache/hadoop:${HADOOP_VERSION}
+    container_name: hdfs-namenode
+    hostname: hdfs-namenode
+    ports:
+      - "9870:9870"
+      - "9000:9000"
+    environment:
+      - HADOOP_HOME=/opt/hadoop
+      - HADOOP_HEAPSIZE=2048
+    volumes:
+      - ./hadoop/dfs/namenode:/hadoop/dfs/namenode
+      - ./hadoop/config/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
+      - ./hadoop/config/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
+      - ./hadoop/script/start-namenode.sh:/start-namenode.sh
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://hdfs-namenode:9870/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    command: ["/bin/bash", "-c", "/start-namenode.sh"]
+    restart: always
+    networks:
+      - spark-network
+
+  hdfs-datanode:
+    image: apache/hadoop:${HADOOP_VERSION}
+    container_name: hdfs-datanode
+    hostname: hdfs-datanode
+    ports:
+      - "9864:9864"
+      - "9866:9866"
+    depends_on:
+      hdfs-namenode:
+        condition: service_healthy
+    environment:
+      - HADOOP_HOME=/opt/hadoop
+      - HADOOP_HEAPSIZE=2048
+    volumes:
+      - ./hadoop/dfs/datanode:/hadoop/dfs/datanode
+      - ./hadoop/config/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
+      - ./hadoop/config/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
+      - ./hadoop/script/start-datanode.sh:/start-datanode.sh
+    command: ["/bin/bash", "-c", "/start-datanode.sh"]
+    restart: always
+    networks:
+      - spark-network
+
+networks:
+  spark-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 9000
+    ipam:
+      config:
+        - subnet: 172.15.0.0/16

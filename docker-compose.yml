@@ -48,6 +48,21 @@ services:
     networks:
       - spark-network
 
+  iceberg-rest:
+    image: tabulario/iceberg-rest
+    container_name: iceberg-rest
+    hostname: iceberg-rest
+    restart: always
+    ports:
+      - "8181:8181"
+    environment:
+      - CATALOG_WAREHOUSE=hdfs://hdfs-namenode:9000/iceberg/warehouse
+    networks:
+      - spark-network
+    depends_on:
+      hdfs-namenode:
+        condition: service_healthy
+
 networks:
   spark-network:
     driver: bridge

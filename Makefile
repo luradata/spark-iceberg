@@ -1,5 +1,5 @@
 # Define required directories
-REQUIRED_DIRS := hadoop/dfs/namenode hadoop/dfs/datanode
+REQUIRED_DIRS := hadoop/dfs/namenode hadoop/dfs/datanode iceberg/warehouse iceberg/notebooks
 
 # Create directories
 init:
@@ -11,6 +11,8 @@ init:
 clean:
 	@echo "Cleaning up..."
 	@sudo rm -rf hadoop/dfs
+	@sudo rm -rf iceberg/warehouse
+	@sudo rm -rf iceberg/notebooks
 	@echo "Cleaned up successfully!"
 
 # Docker compose commands

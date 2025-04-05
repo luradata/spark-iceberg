@@ -48,20 +48,76 @@ services:
     networks:
       - spark-network
 
-  iceberg-rest:
-    image: tabulario/iceberg-rest
-    container_name: iceberg-rest
-    hostname: iceberg-rest
+  spark-master:
+    image: bitnami/spark:${SPARK_VERSION}
+    container_name: spark-master
+    hostname: spark-master
     restart: always
     ports:
-      - "8181:8181"
+      - "7077:7077"
+      - "8080:8080"
+    env_file:
+      - .env
     environment:
-      - CATALOG_WAREHOUSE=hdfs://hdfs-namenode:9000/iceberg/warehouse
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
+      - SPARK_DAEMON_USER=spark
+      - SPARK_DAEMON_GROUP=spark
+    networks:
+      - spark-network
+
+  spark-worker:
+    image: bitnami/spark:${SPARK_VERSION}
+    container_name: spark-worker
+    hostname: spark-worker
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8081:8081"
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
+      - SPARK_DAEMON_USER=spark
+      - SPARK_DAEMON_GROUP=spark
     networks:
       - spark-network
     depends_on:
-      hdfs-namenode:
-        condition: service_healthy
+      - spark-master
+
+  # spark-iceberg:
+  #   image: tabulario/spark-iceberg
+  #   container_name: spark-iceberg
+  #   hostname: spark-iceberg
+  #   restart: always
+  #   environment:
+  #     - HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop
+  #   volumes:
+  #     - ./spark-iceberg/warehouse:/home/iceberg/warehouse
+  #     - ./spark-iceberg/notebooks:/home/iceberg/notebooks/notebooks
+  #     - ./spark-iceberg/spark-events:/home/iceberg/spark-events
+  #     - ./spark-iceberg/conf/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
+  #   ports:
+  #     - "8888:8888"
+  #     - "8080:8080"
+  #     - "10000:10000"
+  #     - "10001:10001"
+  #   depends_on:
+  #     hdfs-namenode:
+  #       condition: service_healthy
+  #   networks:
+  #     - spark-network
 
 networks:
   spark-network:

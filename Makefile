@@ -1,5 +1,5 @@
 # Define required directories
-REQUIRED_DIRS := hadoop/dfs/namenode hadoop/dfs/datanode iceberg/warehouse iceberg/notebooks
+REQUIRED_DIRS := hadoop/dfs/namenode hadoop/dfs/datanode spark-iceberg/warehouse spark-iceberg/notebooks spark-iceberg/spark-events
 
 # Create directories
 init:
@@ -11,8 +11,9 @@ init:
 clean:
 	@echo "Cleaning up..."
 	@sudo rm -rf hadoop/dfs
-	@sudo rm -rf iceberg/warehouse
-	@sudo rm -rf iceberg/notebooks
+	@sudo rm -rf spark-iceberg/warehouse
+	@sudo rm -rf spark-iceberg/notebooks
+	@sudo rm -rf spark-iceberg/spark-events
 	@echo "Cleaned up successfully!"
 
 # Docker compose commands

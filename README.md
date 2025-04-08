@@ -20,7 +20,7 @@ This project provides a complete environment for working with Apache Spark and A
 ### 1. Clone the repository
 
 ```bash
-git clone <https://github.com/luradata/spark-iceberg.git>
+git clone https://github.com/luradata/spark-iceberg.git
 cd spark-iceberg
 ```
 

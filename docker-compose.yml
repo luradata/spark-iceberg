@@ -67,6 +67,9 @@ services:
       - SPARK_USER=spark
       - SPARK_DAEMON_USER=spark
       - SPARK_DAEMON_GROUP=spark
+    volumes:
+      - ./spark/lib/iceberg-spark-runtime-3.5_2.12-1.8.1.jar:/opt/bitnami/spark/jars/iceberg-spark-runtime-3.5_2.12-1.8.1.jar
+      - ./spark/conf/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
     networks:
       - spark-network
 
@@ -91,33 +94,13 @@ services:
       - SPARK_USER=spark
       - SPARK_DAEMON_USER=spark
       - SPARK_DAEMON_GROUP=spark
+    volumes:
+      - ./spark/lib/iceberg-spark-runtime-3.5_2.12-1.8.1.jar:/opt/bitnami/spark/jars/iceberg-spark-runtime-3.5_2.12-1.8.1.jar
+      - ./spark/conf/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
     networks:
       - spark-network
     depends_on:
       - spark-master
-
-  # spark-iceberg:
-  #   image: tabulario/spark-iceberg
-  #   container_name: spark-iceberg
-  #   hostname: spark-iceberg
-  #   restart: always
-  #   environment:
-  #     - HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop
-  #   volumes:
-  #     - ./spark-iceberg/warehouse:/home/iceberg/warehouse
-  #     - ./spark-iceberg/notebooks:/home/iceberg/notebooks/notebooks
-  #     - ./spark-iceberg/spark-events:/home/iceberg/spark-events
-  #     - ./spark-iceberg/conf/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
-  #   ports:
-  #     - "8888:8888"
-  #     - "8080:8080"
-  #     - "10000:10000"
-  #     - "10001:10001"
-  #   depends_on:
-  #     hdfs-namenode:
-  #       condition: service_healthy
-  #   networks:
-  #     - spark-network
 
 networks:
   spark-network:
